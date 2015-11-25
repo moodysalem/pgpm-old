@@ -22,27 +22,99 @@
 
     <hr/>
 
-    <form method="POST" action="/" onsubmit="disableSubmit();">
+    <form id="createLinkForm" method="POST" action="/">
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="E-mail Address" required>
         </div>
+
         <div class="form-group">
             <label class="control-label" for="key">Public Key</label>
             <textarea class="form-control" id="key" name="publicKey" placeholder="Public Key" required></textarea>
         </div>
 
         <div class="form-group">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-block"><i id="chain-icon"
-                                                                                      class="fa fa-chain"></i>
+            <button type="button" id="generate-key" class="btn btn-default btn-block" onclick="generateKey();"><i
+                    id="plus-icon"
+                    class="fa fa-plus"></i>
+                Generate Key Pair
+            </button>
+        </div>
+
+        <div class="form-group">
+            <button type="button" id="submitBtn" class="btn btn-primary btn-block" onclick="submitForm();"><i
+                    id="chain-icon"
+                    class="fa fa-chain"></i>
                 Create Link
             </button>
         </div>
         <script>
-            function disableSubmit() {
-                document.getElementById("submitBtn").disabled = true;
-                document.getElementById("chain-icon").className = "fa fa-spinner fa-pulse"
+
+            var submitting = false;
+
+            function enableSubmit() {
+                if (submitting) {
+                    return;
+                }
+                $("#submitBtn").prop("disabled", false);
+                $("#chain-icon").removeClass("fa-spinner fa-pulse").addClass("fa-chain");
             }
+
+            function disableSubmit() {
+                $("#submitBtn").prop("disabled", true);
+                $("#chain-icon").removeClass("fa-chain").addClass("fa-spinner fa-pulse");
+            }
+
+
+            function enableGenerate() {
+                if (submitting) {
+                    return;
+                }
+                $("#generate-key").prop("disabled", false);
+                $("#plus-icon").addClass("fa-plus").removeClass("fa-spinner fa-pulse");
+            }
+
+            function disableGenerate() {
+                $("#generate-key").prop("disabled", true);
+                $("#plus-icon").removeClass("fa-plus").addClass("fa-spinner fa-pulse");
+            }
+
+            function generateKey() {
+                disableSubmit();
+                disableGenerate();
+                openpgp.generateKeyPair({
+                    numBits: 4096,
+                    userId: "User Name pgpmessager",
+                    unlocked: true
+                }).then(function (keypair) {
+                    enableSubmit();
+                    enableGenerate();
+                    var pk = keypair.privateKeyArmored;
+                    var pubkey = keypair.publicKeyArmored;
+                    $("#key").val(pubkey);
+                    window.prompt("Here is your private key. Copy to clipboard: Ctrl+C, Enter", pk);
+                }, function (error) {
+                    enableSubmit();
+                    enableGenerate();
+                    alert(error);
+                });
+            }
+
+            function verifyKey(key) {
+                return true;
+            }
+
+            function submitForm() {
+                if (verifyKey($("#key").val())) {
+                    submitting = true;
+                    disableGenerate();
+                    disableSubmit();
+                    $("#createLinkForm").submit();
+                } else {
+                    alert("Invalid key.");
+                }
+            }
+
         </script>
     </form>
 

@@ -13,6 +13,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openpgp/1.3.0/openpgp.min.js"
         integrity="sha384-axns8EaVPUSN6JCoGPirqvkhZrK/SEjoFLmufTFb1VSZtQ5K/tFvJ4Fc5+gBiEPl"
         crossorigin="anonymous"></script>
+<!--jquery-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"
+        integrity="sha384-6ePHh72Rl3hKio4HiJ841psfsRJveeS+aLoaEf3BWfS+gTF0XdAqku2ka8VddikM"
+        crossorigin="anonymous"></script>
 
 <style>
     .navbar-brand .logo-color {

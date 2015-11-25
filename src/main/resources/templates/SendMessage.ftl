@@ -51,30 +51,42 @@
             </button>
         </div>
         <script>
+            function enableSubmit() {
+                $("#submitBtn").prop("disabled", false);
+                $("#envelope-icon").removeClass("fa-spinner fa-pulse").addClass("fa-envelope");
+            }
+
             function disableSubmit() {
-                document.getElementById("submitBtn").disabled = true;
-                document.getElementById("envelope-icon").className = "fa fa-spinner fa-pulse"
+                $("#submitBtn").prop("disabled", true);
+                $("#envelope-icon").addClass("fa-spinner fa-pulse").removeClass("fa-envelope");
+            }
+
+            function enableEncrypt() {
+                $("#encryptButton").prop("disabled", false);
+                $("#lock-icon").removeClass("fa-spinner fa-pulse").addClass("fa-lock");
+            }
+
+            function disableEncrypt() {
+                $("#encryptButton").prop("disabled", true);
+                $("#lock-icon").addClass("fa-spinner fa-pulse").removeClass("fa-lock");
             }
 
             function undoEncrypt() {
-                document.getElementById("encryptedMessage").value = "";
-                document.getElementById("submitBtn").disabled = true;
+                $("#encryptedMessage").val("");
+                $("#submitBtn").prop("disabled", true);
             }
 
-            var textArea = document.getElementById("message");
-            if (textArea.addEventListener) {
-                textArea.addEventListener("input", undoEncrypt);
-            } else if (textArea.attachEvent) {
-                area.attachEvent("onpropertychange", undoEncrypt);
-            }
+            var textArea = $("#message");
+            textArea.on("change", undoEncrypt);
 
             function encryptMessage() {
-                var key = document.getElementById("key").value;
+                var key = $("#key").val();
                 var publicKey = openpgp.key.readArmored(key);
-                document.getElementById("encryptButton").disabled = true;
+                disableEncrypt();
                 openpgp.encryptMessage(publicKey.keys, document.getElementById("message").value).then(function (pgpMessage) {
                     // success
-                    document.getElementById("encryptedMessage").value = pgpMessage;
+                    $("#encryptedMessage").val(pgpMessage);
+
                     document.getElementById("submitBtn").disabled = false;
                     document.getElementById("encryptButton").disabled = false;
                 }).catch(function (error) {
