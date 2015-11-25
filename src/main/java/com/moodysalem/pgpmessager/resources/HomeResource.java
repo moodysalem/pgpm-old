@@ -189,7 +189,7 @@ public class HomeResource {
 
     @Inject
     Session mailSession;
-    public static final String FROM_EMAIL = "moody@moodysalem.com";
+    public static final String FROM_EMAIL = "moody@pgpmessager.com";
     public static final String FAILED_TO_SEND_EMAIL_MESSAGE = "Failed to send e-mail message";
 
     protected void sendEmail(Entry entry) {
