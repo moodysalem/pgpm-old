@@ -3,6 +3,7 @@ package com.moodysalem.pgpmessager.resources;
 import com.moodysalem.pgpmessager.hibernate.Entry;
 import com.moodysalem.pgpmessager.model.HomeModel;
 import com.moodysalem.pgpmessager.model.LinkEmailModel;
+import com.moodysalem.pgpmessager.model.SendMessageModel;
 import com.moodysalem.util.RandomStringUtil;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -54,8 +55,9 @@ public class HomeResource {
     /**
      * This presents a screen to a user to send a message
      */
+    @GET
     @Path("send")
-    public Response sendMessage(@QueryParam("secret") String secret) {
+    public Response getSendForm(@QueryParam("secret") String secret) {
         HomeModel sendModel = new HomeModel();
 
         Entry e = getEntry(secret, false);
@@ -66,7 +68,35 @@ public class HomeResource {
             sendModel.setEntry(e);
         }
 
-        return Response.ok(new Viewable("/templates/SendMessage")).build();
+        return Response.ok(new Viewable("/templates/SendMessage", sendModel)).build();
+    }
+
+    @POST
+    @Path("send")
+    public Response sendMessage(@QueryParam("secret") String secret, @FormParam("message") String message) {
+        HomeModel sendModel = new HomeModel();
+
+        Entry e = getEntry(secret, false);
+        if (e == null) {
+            sendModel.setErrorMessage(INVALID_SECRET);
+            return Response.ok(new Viewable("/templates/Home", sendModel)).build();
+        } else {
+            sendModel.setEntry(e);
+        }
+
+        if (message == null || message.trim().isEmpty()) {
+            sendModel.setErrorMessage("Message is required.");
+        } else {
+            SendMessageModel sm = new SendMessageModel();
+            sm.setEntry(e);
+            sm.setMessage(message);
+            sm.setRequestUrl(req.getUriInfo().getBaseUri().toString());
+            sendEmail(e.getEmail(), "Message.ftl", sm);
+            sendModel.setSuccessMessage("Message sent.");
+        }
+
+
+        return Response.ok(new Viewable("/templates/SendMessage", sendModel)).build();
     }
 
 
@@ -85,6 +115,7 @@ public class HomeResource {
                 et.begin();
                 em.remove(e);
                 et.commit();
+                hm.setSuccessMessage("Entry deleted.");
             } catch (Exception ex) {
                 et.rollback();
                 hm.setErrorMessage(FAILED_TO_DELETE_SECRET);
@@ -162,16 +193,20 @@ public class HomeResource {
     public static final String FAILED_TO_SEND_EMAIL_MESSAGE = "Failed to send e-mail message";
 
     protected void sendEmail(Entry entry) {
+        LinkEmailModel lem = new LinkEmailModel();
+        lem.setEntry(entry);
+        lem.setRequestUrl(req.getUriInfo().getBaseUri().toString());
+        sendEmail(entry.getEmail(), "Link.ftl", lem);
+    }
+
+    protected void sendEmail(String to, String template, Object model) {
         try {
             final MimeMessage m = new MimeMessage(mailSession);
-            m.addRecipient(Message.RecipientType.TO, new InternetAddress(entry.getEmail()));
+            m.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             Address fromAddress = new InternetAddress(FROM_EMAIL);
             m.setFrom(fromAddress);
             m.setSubject("Your PGP messager link has been created");
-            LinkEmailModel lem = new LinkEmailModel();
-            lem.setEntry(entry);
-            lem.setRequestUrl(req.getUriInfo().getBaseUri().toString());
-            m.setContent(processTemplate("Link.ftl", lem), "text/html");
+            m.setContent(processTemplate(template, model), "text/html");
             new Thread(() -> {
                 LOG.info("Sending e-mail.");
                 try {

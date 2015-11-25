@@ -33,15 +33,15 @@
         </div>
 
         <div class="form-group">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg"><i id="chain-icon"
-                                                                                             class="fa fa-chain"></i>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-block"><i id="chain-icon"
+                                                                                      class="fa fa-chain"></i>
                 Create Link
             </button>
         </div>
         <script>
             function disableSubmit() {
                 document.getElementById("submitBtn").disabled = true;
-                document.getElementById("chain-icon").className = "fa fa-spin fa-circle-o-notch"
+                document.getElementById("chain-icon").className = "fa fa-spinner fa-pulse"
             }
         </script>
     </form>
