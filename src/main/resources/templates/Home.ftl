@@ -84,7 +84,7 @@
                 disableGenerate();
                 openpgp.generateKeyPair({
                     numBits: 4096,
-                    userId: "User Name pgpmessager",
+                    userId: "PGPMessager Generated",
                     unlocked: true
                 }).then(function (keypair) {
                     enableSubmit();

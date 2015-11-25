@@ -77,23 +77,22 @@
             }
 
             var textArea = $("#message");
-            textArea.on("change", undoEncrypt);
+            textArea.on("input propertychange", undoEncrypt);
 
             function encryptMessage() {
                 var key = $("#key").val();
                 var publicKey = openpgp.key.readArmored(key);
                 disableEncrypt();
-                openpgp.encryptMessage(publicKey.keys, document.getElementById("message").value).then(function (pgpMessage) {
+                openpgp.encryptMessage(publicKey.keys, $("#message").val()).then(function (pgpMessage) {
                     // success
                     $("#encryptedMessage").val(pgpMessage);
-
-                    document.getElementById("submitBtn").disabled = false;
-                    document.getElementById("encryptButton").disabled = false;
+                    enableSubmit();
+                    enableEncrypt();
                 }).catch(function (error) {
                     alert(error);
-                    document.getElementById("encryptedMessage").value = "";
-                    document.getElementById("encryptButton").disabled = false;
-                    document.getElementById("submitBtn").disabled = true;
+                    enableEncrypt();
+                    // we don't use disablesubmit because that shows a loading icon
+                    $("#submitBtn").prop("disabled", true);
                 });
             }
         </script>
