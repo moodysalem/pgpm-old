@@ -192,11 +192,11 @@
 
                             <p>You received this encrypted message from your friend:</p>
 
-                            <p>${message}</p>
+                            <p>${message?html}</p>
 
                             <p>It should be encrypted with this public key:</p>
 
-                            <p>${entry.publicKey}</p>
+                            <p>${entry.publicKey?html}</p>
 
                             <p>Use this link to remove your
                                 entry: ${requestUrl}delete?secret=${entry.adminSecret}</p>

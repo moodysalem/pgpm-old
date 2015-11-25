@@ -18,5 +18,10 @@
     .navbar-brand .logo-color {
         color: red;
     }
+
+    textarea {
+        resize: vertical;
+        height: 150px !important;
+    }
 </style>
 

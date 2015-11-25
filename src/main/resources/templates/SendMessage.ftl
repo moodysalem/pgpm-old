@@ -56,16 +56,31 @@
                 document.getElementById("envelope-icon").className = "fa fa-spinner fa-pulse"
             }
 
+            function undoEncrypt() {
+                document.getElementById("encryptedMessage").value = "";
+                document.getElementById("submitBtn").disabled = true;
+            }
+
+            var textArea = document.getElementById("message");
+            if (textArea.addEventListener) {
+                textArea.addEventListener("input", undoEncrypt);
+            } else if (textArea.attachEvent) {
+                area.attachEvent("onpropertychange", undoEncrypt);
+            }
+
             function encryptMessage() {
                 var key = document.getElementById("key").value;
                 var publicKey = openpgp.key.readArmored(key);
+                document.getElementById("encryptButton").disabled = true;
                 openpgp.encryptMessage(publicKey.keys, document.getElementById("message").value).then(function (pgpMessage) {
                     // success
                     document.getElementById("encryptedMessage").value = pgpMessage;
                     document.getElementById("submitBtn").disabled = false;
+                    document.getElementById("encryptButton").disabled = false;
                 }).catch(function (error) {
                     alert(error);
                     document.getElementById("encryptedMessage").value = "";
+                    document.getElementById("encryptButton").disabled = false;
                     document.getElementById("submitBtn").disabled = true;
                 });
             }
