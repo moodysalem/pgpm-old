@@ -22,7 +22,7 @@
 
     <hr/>
 
-    <form method="POST" onsubmit="disableSubmit();">
+    <form method="POST" action="/" onsubmit="disableSubmit();">
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="E-mail Address" required>
@@ -33,13 +33,15 @@
         </div>
 
         <div class="form-group">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-block"><i class="fa fa-chain"></i> Create
-                Link
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg"><i id="chain-icon"
+                                                                                             class="fa fa-chain"></i>
+                Create Link
             </button>
         </div>
         <script>
             function disableSubmit() {
                 document.getElementById("submitBtn").disabled = true;
+                document.getElementById("chain-icon").className = "fa fa-spin fa-circle-o-notch"
             }
         </script>
     </form>

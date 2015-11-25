@@ -22,10 +22,10 @@
                         <td style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;">
                             <p style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">Hi there,</p>
 
-                            <p style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">Give this link to your friends: ${model.requestUrl}?secret=${model.entry.secret}</p>
+                            <p style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">Give this link to your friends: ${requestUrl}send?secret=${entry.secret}</p>
 
                             <p style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">Use this link to remove your
-                                entry: ${model.requestUrl}/delete?secret=${model.entry.adminSecret}</p>
+                                entry: ${requestUrl}delete?secret=${entry.adminSecret}</p>
 
                         </td>
                     </tr>

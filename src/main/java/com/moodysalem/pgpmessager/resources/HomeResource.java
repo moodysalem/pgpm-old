@@ -38,32 +38,46 @@ public class HomeResource {
 
     private static final Logger LOG = Logger.getLogger(HomeResource.class.getName());
     public static final String INVALID_SECRET = "Invalid secret.";
-
-    @QueryParam("secret")
-    String secret;
+    public static final String FAILED_TO_DELETE_SECRET = "Failed to delete secret";
 
     @Context
     ContainerRequestContext req;
 
+    /**
+     * Show the form to create an entry
+     */
     @GET
     public Response showForm() {
-        HomeModel hm = new HomeModel();
-
-        if (secret != null) {
-            Entry e = getEntry(secret, false);
-            if (e == null) {
-                hm.setErrorMessage(INVALID_SECRET);
-            } else {
-                hm.setEntry(e);
-            }
-        }
-
-        return Response.ok(new Viewable("/templates/Home", hm)).build();
+        return Response.ok(new Viewable("/templates/Home")).build();
     }
 
+    /**
+     * This presents a screen to a user to send a message
+     */
+    @Path("send")
+    public Response sendMessage(@QueryParam("secret") String secret) {
+        HomeModel sendModel = new HomeModel();
+
+        Entry e = getEntry(secret, false);
+        if (e == null) {
+            sendModel.setErrorMessage(INVALID_SECRET);
+            return Response.ok(new Viewable("/templates/Home", sendModel)).build();
+        } else {
+            sendModel.setEntry(e);
+        }
+
+        return Response.ok(new Viewable("/templates/SendMessage")).build();
+    }
+
+
+    /**
+     * This just deletes an entry
+     */
     @GET
     @Path("delete")
-    public Response getAdmin() {
+    public Response deleteEntry(@QueryParam("secret") String secret) {
+        HomeModel hm = new HomeModel();
+
         Entry e = getEntry(secret, true);
         if (e != null) {
             EntityTransaction et = em.getTransaction();
@@ -73,13 +87,19 @@ public class HomeResource {
                 et.commit();
             } catch (Exception ex) {
                 et.rollback();
+                hm.setErrorMessage(FAILED_TO_DELETE_SECRET);
                 LOG.log(Level.SEVERE, "Failed to delete entry", ex);
             }
+        } else {
+            hm.setErrorMessage(INVALID_SECRET);
         }
 
-        return Response.seeOther(req.getUriInfo().getBaseUriBuilder().build()).build();
+        return Response.ok(new Viewable("/templates/Home", hm)).build();
     }
 
+    /**
+     * Helper to get an entry from the DB
+     */
     private Entry getEntry(String secret, boolean admin) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Entry> ec = cb.createQuery(Entry.class);
@@ -100,6 +120,9 @@ public class HomeResource {
     @Inject
     EntityManager em;
 
+    /**
+     * Create an entry from an email and public key
+     */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response doPost(@FormParam("email") String email, @FormParam("publicKey") String publicKey) {
@@ -126,6 +149,7 @@ public class HomeResource {
                 LOG.log(Level.SEVERE, "Failed to create link", e);
                 hm.setErrorMessage(ex.getMessage());
             }
+            sendEmail(e);
         }
 
         return Response.ok(new Viewable("/templates/Home", hm)).build();

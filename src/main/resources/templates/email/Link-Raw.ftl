@@ -190,10 +190,10 @@
                         <td>
                             <p>Hi there,</p>
 
-                            <p>Give this link to your friends: ${model.requestUrl}?secret=${model.entry.secret}</p>
+                            <p>Give this link to your friends: ${requestUrl}send?secret=${entry.secret}</p>
 
                             <p>Use this link to remove your
-                                entry: ${model.requestUrl}/delete?secret=${model.entry.adminSecret}</p>
+                                entry: ${requestUrl}delete?secret=${entry.adminSecret}</p>
 
                         </td>
                     </tr>
