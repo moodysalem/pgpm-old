@@ -91,7 +91,7 @@ public class HomeResource {
             sm.setEntry(e);
             sm.setMessage(message);
             sm.setRequestUrl(req.getUriInfo().getBaseUri().toString());
-            sendEmail(e.getEmail(), "Message.ftl", sm);
+            sendEmail(e.getEmail(), "You received a message from a friend", "Message.ftl", sm);
             sendModel.setSuccessMessage("Message sent.");
         }
 
@@ -196,16 +196,16 @@ public class HomeResource {
         LinkEmailModel lem = new LinkEmailModel();
         lem.setEntry(entry);
         lem.setRequestUrl(req.getUriInfo().getBaseUri().toString());
-        sendEmail(entry.getEmail(), "Link.ftl", lem);
+        sendEmail(entry.getEmail(), "Your PGP messager link has been created", "Link.ftl", lem);
     }
 
-    protected void sendEmail(String to, String template, Object model) {
+    protected void sendEmail(String to, String subject, String template, Object model) {
         try {
             final MimeMessage m = new MimeMessage(mailSession);
             m.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             Address fromAddress = new InternetAddress(FROM_EMAIL);
             m.setFrom(fromAddress);
-            m.setSubject("Your PGP messager link has been created");
+            m.setSubject(subject);
             m.setContent(processTemplate(template, model), "text/html");
             new Thread(() -> {
                 LOG.info("Sending e-mail.");
