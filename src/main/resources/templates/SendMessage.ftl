@@ -85,6 +85,6 @@
 </#if>
 </div>
 
-
+<#include "./GoogleAnalytics.ftl">
 </body>
 </html>
