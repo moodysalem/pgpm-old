@@ -92,7 +92,7 @@
                     var pk = keypair.privateKeyArmored;
                     var pubkey = keypair.publicKeyArmored;
                     $("#key").val(pubkey);
-                    window.prompt("Here is your private key. Copy to clipboard: Ctrl+C, Enter", pk);
+                    window.prompt("Here is your private key. Copy to clipboard: Ctrl+C, Enter", pubkey + "\n" + pk);
                 }, function (error) {
                     enableSubmit();
                     enableGenerate();
