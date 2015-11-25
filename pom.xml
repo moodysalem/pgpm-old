@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.moodysalem</groupId>
+  <artifactId>pgpmessager</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jaxrs.lib.version>1.0.1</jaxrs.lib.version>
+    <!--skip deploying to the repositories -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
+  <packaging>war</packaging>
+
+  <name>PGPMessage</name>
+
+  <dependencies>
+    <!--jaxrs lib-->
+    <dependency>
+      <groupId>com.moodysalem.java</groupId>
+      <artifactId>jaxrs-lib</artifactId>
+      <version>${jaxrs.lib.version}</version>
+    </dependency>
+
+    <!-- jaxrs lib for testing -->
+    <dependency>
+      <groupId>com.moodysalem.java</groupId>
+      <artifactId>jaxrs-lib-test</artifactId>
+      <version>${jaxrs.lib.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- mysql connector -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.35</version>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.3</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+      </plugin>
+
+      <plugin>
+        <groupId>br.com.ingenieux</groupId>
+        <artifactId>beanstalk-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>deploy to EB</id>
+            <!--<phase>deploy</phase>-->
+            <goals>
+              <goal>upload-source-bundle</goal>
+              <goal>create-application-version</goal>
+              <goal>update-environment</goal>
+              <goal>clean-previous-versions</goal>
+            </goals>
+            <configuration>
+              <silentUpload>true</silentUpload>
+              <applicationName>PGPMessager</applicationName>
+              <environmentRef></environmentRef>
+              <s3Bucket>eb-project-versions</s3Bucket>
+              <s3Key>${project.groupId}/${project.artifactId}/${project.build.finalName}</s3Key>
+              <versionLabel>${project.build.finalName}-${maven.build.timestamp}</versionLabel>
+              <regionName>us-west-2</regionName>
+              <versionsToKeep>5</versionsToKeep>
+              <dryRun>false</dryRun>
+              <versionDescription>jaxrs: ${jaxrs.lib.version}</versionDescription>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.3.6.v20151106</version>
+        <configuration>
+          <systemProperties>
+            <systemProperty>
+              <name>JDBC_CONNECTION_STRING</name>
+              <value>${JDBC_CONNECTION_STRING}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>JDBC_CONNECTION_USERNAME</name>
+              <value>${JDBC_CONNECTION_USERNAME}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>JDBC_CONNECTION_PASSWORD</name>
+              <value>${JDBC_CONNECTION_PASSWORD}</value>
+            </systemProperty>
+
+            <systemProperty>
+              <name>SMTP_HOST</name>
+              <value>${SMTP_HOST}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>SMTP_USERNAME</name>
+              <value>${SMTP_USERNAME}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>SMTP_PASSWORD</name>
+              <value>${SMTP_PASSWORD}</value>
+            </systemProperty>
+
+            <systemProperty>
+              <name>DEBUG</name>
+              <value>1</value>
+            </systemProperty>
+
+            <systemProperty>
+              <name>LIQUIBASE_CONTEXT</name>
+              <value>test</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.187</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

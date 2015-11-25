@@ -1,0 +1,43 @@
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="Entry Table" author="moody.salem">
+    <createTable tableName="Entry">
+      <column name="id" autoIncrement="true" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created" type="TIMESTAMP" defaultValue="${now}">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated" type="TIMESTAMP" defaultValue="${now}">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="BIGINT" defaultValue="0">
+        <constraints nullable="false"/>
+      </column>
+      <column name="secret" type="VARCHAR(191)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="adminSecret" type="VARCHAR(191)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email" type="VARCHAR(191)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="publicKey" type="${TEXT}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <sql dbms="mysql">ALTER TABLE Entry CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;</sql>
+    <createIndex tableName="Entry" indexName="IX_SECRET">
+      <column name="secret"/>
+    </createIndex>
+    <createIndex tableName="Entry" indexName="IX_ADMIN_SECRET">
+      <column name="adminSecret"/>
+    </createIndex>
+  </changeSet>
+
+
+</databaseChangeLog>
