@@ -3,6 +3,8 @@ package com.moodysalem.pgpmessager;
 import com.moodysalem.jaxrs.lib.BaseApplication;
 import com.moodysalem.jaxrs.lib.factories.JAXRSEntityManagerFactory;
 import com.moodysalem.jaxrs.lib.factories.MailSessionFactory;
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.template.Configuration;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
@@ -48,6 +50,11 @@ public class Application extends BaseApplication {
                         port
                     )
                 ).to(Session.class).in(RequestScoped.class);
+
+                Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_23);
+                freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(this.getClass().getClassLoader(), "/templates/email"));
+                freemarkerConfiguration.setDefaultEncoding("UTF-8");
+                bind(freemarkerConfiguration).to(Configuration.class);
             }
         });
     }
