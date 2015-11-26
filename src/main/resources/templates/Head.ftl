@@ -1,4 +1,4 @@
-<title>PGP Messager</title>
+<title>PGPM.io</title>
 <meta name="author" content="Moody Salem"/>
 <meta name="description" content="Generate links for friends to send you PGP encrypted messages"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
