@@ -8,17 +8,17 @@
 <#include "./Nav.ftl">
 
 <div class="container">
-    <h3 class="page-header">PGPMessager</h3>
+    <h3 class="page-header">PGP Messenger</h3>
 
     <p class="lead">
-        This is a simple utility for creating a page for your non-technical friends to send you messages that are
-        encryped with your PGP public key.
-        You use this form to generate a link, send the link to your friends, and have them message you via the form in
-        the link.
-        All messages are encrypted in the browser via openPGP before being transmitted over the wire, and are thus not
-        exposed
-        to MITM attacks.
+        Create a URL to distribute to your friends as a method of sending you messages encrypted with your PGP key.
     </p>
+    <ol>
+        <li>Create an entry by completing this form</li>
+        <li>Send the link you receive via e-mail to your friends</li>
+        <li>Receive encrypted messages created via your link</li>
+        <li>Decrypt with your PGP key</li>
+    </ol>
 
     <hr/>
 
@@ -33,87 +33,71 @@
             <textarea class="form-control" id="key" name="publicKey" placeholder="Public Key" required></textarea>
         </div>
 
+        <div class="form-group" style="display:none;">
+            <label class="control-label" for="privateKey">Generated Private Key</label>
+            <textarea class="form-control" id="privateKey" placeholder="Private Key" readOnly></textarea>
+        </div>
+
         <div class="form-group">
-            <button type="button" id="generate-key" class="btn btn-default btn-block" onclick="generateKey();"><i
-                    id="plus-icon"
-                    class="fa fa-plus"></i>
+            <button type="button" id="generateKeyBtn" class="btn btn-default btn-block">
+                <i id="generateKeyIcon" class="fa fa-plus"></i>
                 Generate Key Pair
             </button>
         </div>
 
         <div class="form-group">
-            <button type="button" id="submitBtn" class="btn btn-primary btn-block" onclick="submitForm();"><i
-                    id="chain-icon"
-                    class="fa fa-chain"></i>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-block">
+                <i id="submitIcon" class="fa fa-chain"></i>
                 Create Link
             </button>
         </div>
+
         <script>
+            // whether the form is currently submitting
+            var key = $("#key");
+            var pk = $("#privateKey");
+            var genKey = $("#generateKeyBtn");
+            var genIcon = $("#generateKeyIcon");
+            var submitBtn = $("#submitBtn");
+            var submitIcon = $("#submitIcon");
+            var fm = $("#createLinkForm");
 
-            var submitting = false;
-
-            function enableSubmit() {
-                if (submitting) {
-                    return;
-                }
-                $("#submitBtn").prop("disabled", false);
-                $("#chain-icon").removeClass("fa-spinner fa-pulse").addClass("fa-chain");
-            }
-
-            function disableSubmit() {
-                $("#submitBtn").prop("disabled", true);
-                $("#chain-icon").removeClass("fa-chain").addClass("fa-spinner fa-pulse");
-            }
-
-
-            function enableGenerate() {
-                if (submitting) {
-                    return;
-                }
-                $("#generate-key").prop("disabled", false);
-                $("#plus-icon").addClass("fa-plus").removeClass("fa-spinner fa-pulse");
-            }
-
-            function disableGenerate() {
-                $("#generate-key").prop("disabled", true);
-                $("#plus-icon").removeClass("fa-plus").addClass("fa-spinner fa-pulse");
-            }
-
-            function generateKey() {
-                disableSubmit();
-                disableGenerate();
+            var generateKey = function generateKey() {
                 openpgp.generateKeyPair({
                     numBits: 4096,
-                    userId: "PGPMessager Generated",
+                    userId: "PGPM",
                     unlocked: true
                 }).then(function (keypair) {
-                    enableSubmit();
-                    enableGenerate();
-                    var pk = keypair.privateKeyArmored;
+                    // insert values into key fields
+                    var privKey = keypair.privateKeyArmored;
                     var pubkey = keypair.publicKeyArmored;
-                    $("#key").val(pubkey);
-                    window.prompt("Here is your private key. Copy to clipboard: Ctrl+C, Enter", pubkey + "\n" + pk);
+                    key.val(pubkey);
+                    pk.val(privKey).closest(".form-group").css("display", "");
                 }, function (error) {
-                    enableSubmit();
-                    enableGenerate();
+                    // error occurred, remove values from key fields
+                    pk.val("").closest(".form-group").css("display", "none");
+                    key.val("");
                     alert(error);
                 });
-            }
+            };
+            genKey.on("click", generateKey);
 
-            function verifyKey(key) {
-                return true;
-            }
+            var verifyKey = function verifyKey(key) {
+                var publicKey = openpgp.key.readArmored(key);
+                return publicKey.keys.length === 1;
+            };
 
-            function submitForm() {
-                if (verifyKey($("#key").val())) {
-                    submitting = true;
-                    disableGenerate();
-                    disableSubmit();
-                    $("#createLinkForm").submit();
+            var submitForm = function submitForm(e) {
+                if (verifyKey(key.val())) {
+                    // if the key is valid
+                    fm.submit();
                 } else {
+                    // prevent form submission
+                    e.preventDefault();
                     alert("Invalid key.");
                 }
-            }
+            };
+            fm.on("submit", submitForm);
 
         </script>
     </form>

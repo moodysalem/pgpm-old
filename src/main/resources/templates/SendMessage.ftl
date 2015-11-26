@@ -9,10 +9,10 @@
 
 
 <div class="container">
-    <h3 class="page-header">PGPMessager</h3>
+    <h3 class="page-header">About</h3>
 
     <p class="lead">
-        Use this page to contact your friend.
+        Use this form to contact whomever sent you this link.
     </p>
 
     <hr/>
