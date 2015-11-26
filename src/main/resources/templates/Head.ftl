@@ -27,5 +27,10 @@
         resize: vertical;
         height: 150px !important;
     }
+
+    .page-footer {
+        margin-bottom: 1em;
+        opacity: 0.6
+    }
 </style>
 

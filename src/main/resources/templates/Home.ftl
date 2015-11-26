@@ -140,7 +140,5 @@
 
 <#include "./Footer.ftl">
 </div>
-
-<#include "./GoogleAnalytics.ftl">
 </body>
 </html>
