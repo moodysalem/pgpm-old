@@ -39,5 +39,13 @@
     </createIndex>
   </changeSet>
 
+  <changeSet id="Add mailtoLink attribute" author="moody.salem">
+    <addColumn tableName="Entry">
+      <column name="mailtoLink" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 
 </databaseChangeLog>

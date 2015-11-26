@@ -18,6 +18,10 @@ public class Entry extends BaseEntity {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "mailtoLink")
+    private boolean mailtoLink;
+
     @Lob
     @Column(name = "publicKey")
     private String publicKey;
@@ -52,5 +56,13 @@ public class Entry extends BaseEntity {
 
     public void setAdminSecret(String adminSecret) {
         this.adminSecret = adminSecret;
+    }
+
+    public boolean isMailtoLink() {
+        return mailtoLink;
+    }
+
+    public void setMailtoLink(boolean mailtoLink) {
+        this.mailtoLink = mailtoLink;
     }
 }

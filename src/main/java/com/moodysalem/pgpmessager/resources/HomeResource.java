@@ -159,7 +159,9 @@ public class HomeResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response doPost(@FormParam("email") String email, @FormParam("publicKey") String publicKey) {
+    public Response doPost(@FormParam("email") String email,
+                           @FormParam("publicKey") String publicKey,
+                           @FormParam("mailtoLink") String mailtoLink) {
         HomeModel hm = new HomeModel();
 
         if (email == null || publicKey == null || email.trim().isEmpty() || publicKey.trim().isEmpty()) {
@@ -170,6 +172,7 @@ public class HomeResource {
             e.setPublicKey(publicKey);
             e.setSecret(RandomStringUtil.randomAlphaNumeric(64));
             e.setAdminSecret(RandomStringUtil.randomAlphaNumeric(64));
+            e.setMailtoLink("on".equals(mailtoLink));
 
             EntityTransaction et = em.getTransaction();
             try {
@@ -210,7 +213,7 @@ public class HomeResource {
             m.setFrom(fromAddress);
             m.setSubject(subject);
             m.setContent(processTemplate(template, model), "text/html");
-            EMAIL_THREAD_MANAGER.execute(()-> {
+            EMAIL_THREAD_MANAGER.execute(() -> {
                 LOG.info("Sending e-mail.");
                 try {
                     Transport.send(m);

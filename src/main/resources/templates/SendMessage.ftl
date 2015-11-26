@@ -45,19 +45,26 @@
         </div>
 
         <div class="form-group">
-            <button type="submit" id="submitBtn" class="btn btn-success btn-block" disabled><i id="envelope-icon"
-                                                                                               class="fa fa-envelope"></i>
-                Send
+        <#if model.entry.mailtoLink>
+            <a id="submitBtn" class="btn btn-success btn-block disabled">
+                <i id="envelope-icon" class="fa fa-envelope"></i>
+                Send via e-mail
+            </a>
+        <#else>
+            <button type="submit" id="submitBtn" class="btn btn-success btn-block" disabled>
+                <i id="envelope-icon" class="fa fa-envelope"></i>
+                Send via PGPM.io
             </button>
+        </#if>
         </div>
         <script>
             function enableSubmit() {
-                $("#submitBtn").prop("disabled", false);
+                $("#submitBtn").prop("disabled", false).removeClass("disabled");
                 $("#envelope-icon").removeClass("fa-spinner fa-pulse").addClass("fa-envelope");
             }
 
             function disableSubmit() {
-                $("#submitBtn").prop("disabled", true);
+                $("#submitBtn").prop("disabled", true).addClass("disabled");
                 $("#envelope-icon").addClass("fa-spinner fa-pulse").removeClass("fa-envelope");
             }
 
@@ -73,11 +80,26 @@
 
             function undoEncrypt() {
                 $("#encryptedMessage").val("");
-                $("#submitBtn").prop("disabled", true);
+                $("#submitBtn").prop("disabled", true).addClass("disabled").removeAttr("href");
             }
 
             var textArea = $("#message");
             textArea.on("input propertychange", undoEncrypt);
+
+            function generateNewMailtoLink() {
+            <#if model.entry.mailtoLink>
+                var link = "mailto:${model.entry.email?js_string}?" +
+                        "subject=" + encodeURIComponent("My Encrypted Message") +
+                        "&body=" + encodeURIComponent($("#encryptedMessage").val());
+                $("#submitBtn").attr("href", link);
+            </#if>
+            }
+
+            function removeMailtoLink() {
+            <#if model.entry.mailtoLink>
+                $("#submitBtn").removeAttr("href");
+            </#if>
+            }
 
             function encryptMessage() {
                 var key = $("#key").val();
@@ -88,11 +110,13 @@
                     $("#encryptedMessage").val(pgpMessage);
                     enableSubmit();
                     enableEncrypt();
+                    generateNewMailtoLink();
                 }).catch(function (error) {
                     alert(error);
                     enableEncrypt();
+                    removeMailtoLink();
                     // we don't use disablesubmit because that shows a loading icon
-                    $("#submitBtn").prop("disabled", true);
+                    $("#submitBtn").prop("disabled", true).addClass("disabled").removeAttr("href");
                 });
             }
         </script>

@@ -34,6 +34,16 @@
                       required></textarea>
         </div>
 
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="mailtoLink" checked="checked"> Use 'mailto' link
+            </label>
+            <p class="help-block">
+                This forces the message sender to use their own e-mail client to send the e-mail. You can expect
+                to receive encrypted messages directly from the user. However this exposes your e-mail address.
+            </p>
+        </div>
+
         <div class="form-group" style="display:none;">
             <label class="control-label" for="privateKey">Generated Private Key <strong>(Keep This)</strong></label>
             <textarea class="form-control" id="privateKey" placeholder="Private Key" readOnly></textarea>
