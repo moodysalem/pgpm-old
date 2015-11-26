@@ -30,8 +30,8 @@
 
         <div class="form-group">
             <label class="control-label" for="key">Public Key</label>
-            <textarea class="form-control" id="key" name="publicKey" placeholder="Paste in your Public Key" required>
-            </textarea>
+            <textarea class="form-control" id="key" name="publicKey" placeholder="Paste in your Public Key"
+                      required></textarea>
         </div>
 
         <div class="form-group" style="display:none;">
