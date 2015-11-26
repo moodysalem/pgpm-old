@@ -30,11 +30,12 @@
 
         <div class="form-group">
             <label class="control-label" for="key">Public Key</label>
-            <textarea class="form-control" id="key" name="publicKey" placeholder="Public Key" required></textarea>
+            <textarea class="form-control" id="key" name="publicKey" placeholder="Paste in your Public Key" required>
+            </textarea>
         </div>
 
         <div class="form-group" style="display:none;">
-            <label class="control-label" for="privateKey">Generated Private Key</label>
+            <label class="control-label" for="privateKey">Generated Private Key <strong>(Keep This)</strong></label>
             <textarea class="form-control" id="privateKey" placeholder="Private Key" readOnly></textarea>
         </div>
 
@@ -61,24 +62,36 @@
             var submitBtn = $("#submitBtn");
             var submitIcon = $("#submitIcon");
             var fm = $("#createLinkForm");
+            var spinnerClass = "fa-spinner fa-pulse";
 
             var generateKey = function generateKey() {
-                openpgp.generateKeyPair({
-                    numBits: 4096,
-                    userId: "PGPM",
-                    unlocked: true
-                }).then(function (keypair) {
-                    // insert values into key fields
-                    var privKey = keypair.privateKeyArmored;
-                    var pubkey = keypair.publicKeyArmored;
-                    key.val(pubkey);
-                    pk.val(privKey).closest(".form-group").css("display", "");
-                }, function (error) {
-                    // error occurred, remove values from key fields
-                    pk.val("").closest(".form-group").css("display", "none");
-                    key.val("");
-                    alert(error);
-                });
+                submitBtn.prop("disabled", true);
+                genKey.prop("disabled", true);
+                genIcon.removeClass("fa-plus").addClass(spinnerClass);
+                setTimeout(function () {
+                    openpgp.generateKeyPair({
+                        numBits: 4096,
+                        userId: "PGPM",
+                        unlocked: true
+                    }).then(function (keypair) {
+                        submitBtn.prop("disabled", false);
+                        genKey.prop("disabled", false);
+                        genIcon.removeClass(spinnerClass).addClass("fa-plus");
+                        // insert values into key fields
+                        var privKey = keypair.privateKeyArmored;
+                        var pubkey = keypair.publicKeyArmored;
+                        key.val(pubkey);
+                        pk.val(privKey).closest(".form-group").css("display", "");
+                    }, function (error) {
+                        submitBtn.prop("disabled", false);
+                        genKey.prop("disabled", false);
+                        genIcon.removeClass(spinnerClass).addClass("fa-plus");
+                        // error occurred, remove values from key fields
+                        pk.val("").closest(".form-group").css("display", "none");
+                        key.val("");
+                        alert(error);
+                    });
+                }, 50);
             };
             genKey.on("click", generateKey);
 
@@ -89,8 +102,9 @@
 
             var submitForm = function submitForm(e) {
                 if (verifyKey(key.val())) {
-                    // if the key is valid
-                    fm.submit();
+                    genKey.prop("disabled", true);
+                    submitBtn.prop("disabled", true);
+                    submitIcon.removeClass("fa-link").addClass(spinnerClass);
                 } else {
                     // prevent form submission
                     e.preventDefault();
