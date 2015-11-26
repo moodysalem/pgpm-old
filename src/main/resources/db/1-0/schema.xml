@@ -41,7 +41,7 @@
 
   <changeSet id="Add mailtoLink attribute" author="moody.salem">
     <addColumn tableName="Entry">
-      <column name="mailtoLink" type="BOOLEAN">
+      <column name="mailtoLink" type="BOOLEAN" defaultValueBoolean="false">
         <constraints nullable="false"/>
       </column>
     </addColumn>
