@@ -109,6 +109,8 @@
         <i class="fa fa-check"></i> ${model.successMessage?html}
     </div>
 </#if>
+
+<#include "./Footer.ftl">
 </div>
 
 <#include "./GoogleAnalytics.ftl">
