@@ -29,6 +29,8 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +42,7 @@ public class HomeResource {
     private static final Logger LOG = Logger.getLogger(HomeResource.class.getName());
     public static final String INVALID_SECRET = "Invalid secret.";
     public static final String FAILED_TO_DELETE_SECRET = "Failed to delete secret";
+    private static final Executor EMAIL_THREAD_MANAGER = Executors.newFixedThreadPool(5);
 
     @Context
     ContainerRequestContext req;
@@ -207,7 +210,7 @@ public class HomeResource {
             m.setFrom(fromAddress);
             m.setSubject(subject);
             m.setContent(processTemplate(template, model), "text/html");
-            new Thread(() -> {
+            EMAIL_THREAD_MANAGER.execute(()-> {
                 LOG.info("Sending e-mail.");
                 try {
                     Transport.send(m);
@@ -215,7 +218,7 @@ public class HomeResource {
                 } catch (Exception e) {
                     LOG.log(Level.SEVERE, FAILED_TO_SEND_EMAIL_MESSAGE, e);
                 }
-            }).run();
+            });
         } catch (Exception e) {
             LOG.log(Level.SEVERE, FAILED_TO_SEND_EMAIL_MESSAGE, e);
         }
