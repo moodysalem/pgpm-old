@@ -2,6 +2,7 @@
 <html>
 <head>
 <#include "./Head.ftl">
+    <meta name="google-site-verification" content="x0X03pS11CEzsxQpTwmMrsEDoZM29YFZVLazajNxSxU"/>
 </head>
 <body>
 
