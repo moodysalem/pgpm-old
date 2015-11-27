@@ -1,6 +1,6 @@
-package com.moodysalem.pgpmessager.model;
+package io.pgpm.model;
 
-import com.moodysalem.pgpmessager.hibernate.Entry;
+import io.pgpm.hibernate.Entry;
 
 public class LinkEmailModel {
     private Entry entry;

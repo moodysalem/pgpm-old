@@ -9,7 +9,7 @@
 <#include "./Nav.ftl">
 
 <div class="container">
-    <h3 class="page-header">PGP Messenger</h3>
+    <h3 class="page-header">PGPM.io</h3>
 
     <p class="lead">
         Create a URL to distribute to your friends as a method of sending you messages encrypted with your PGP key.

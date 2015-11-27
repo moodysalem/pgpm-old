@@ -1,12 +1,12 @@
-package com.moodysalem.pgpmessager.resources;
+package io.pgpm.resources;
 
-import com.moodysalem.pgpmessager.hibernate.Entry;
-import com.moodysalem.pgpmessager.model.HomeModel;
-import com.moodysalem.pgpmessager.model.LinkEmailModel;
-import com.moodysalem.pgpmessager.model.SendMessageModel;
 import com.moodysalem.util.RandomStringUtil;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+import io.pgpm.hibernate.Entry;
+import io.pgpm.model.HomeModel;
+import io.pgpm.model.LinkEmailModel;
+import io.pgpm.model.SendMessageModel;
 import org.glassfish.jersey.server.mvc.Viewable;
 
 import javax.inject.Inject;
@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -113,10 +114,11 @@ public class HomeResource {
 
         Entry e = getEntry(secret, true);
         if (e != null) {
+            e.setDeleted(true);
             EntityTransaction et = em.getTransaction();
             try {
                 et.begin();
-                em.remove(e);
+                em.merge(e);
                 et.commit();
                 hm.setSuccessMessage("Entry deleted.");
             } catch (Exception ex) {
@@ -139,10 +141,11 @@ public class HomeResource {
         CriteriaQuery<Entry> ec = cb.createQuery(Entry.class);
         Root<Entry> er = ec.from(Entry.class);
         ec.select(er);
+        Predicate notDeleted = cb.equal(er.get("deleted"), false);
         if (admin) {
-            ec.where(cb.equal(er.get("adminSecret"), secret));
+            ec.where(cb.equal(er.get("adminSecret"), secret), notDeleted);
         } else {
-            ec.where(cb.equal(er.get("secret"), secret));
+            ec.where(cb.equal(er.get("secret"), secret), notDeleted);
         }
         List<Entry> entries = em.createQuery(ec).getResultList();
         if (entries.size() == 1) {
@@ -202,7 +205,7 @@ public class HomeResource {
         LinkEmailModel lem = new LinkEmailModel();
         lem.setEntry(entry);
         lem.setRequestUrl(req.getUriInfo().getBaseUri().toString());
-        sendEmail(entry.getEmail(), "Your PGP messager link has been created", "Link.ftl", lem);
+        sendEmail(entry.getEmail(), "Your PGPM.io link has been created", "Link.ftl", lem);
     }
 
     protected void sendEmail(String to, String subject, String template, Object model) {

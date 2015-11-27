@@ -1,4 +1,4 @@
-package com.moodysalem.pgpmessager.hibernate;
+package io.pgpm.hibernate;
 
 import com.moodysalem.hibernate.model.BaseEntity;
 
@@ -25,6 +25,9 @@ public class Entry extends BaseEntity {
     @Lob
     @Column(name = "publicKey")
     private String publicKey;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     public String getSecret() {
         return secret;
@@ -64,5 +67,13 @@ public class Entry extends BaseEntity {
 
     public void setMailtoLink(boolean mailtoLink) {
         this.mailtoLink = mailtoLink;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

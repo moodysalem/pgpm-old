@@ -47,5 +47,12 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="add deleted column" author="moody.salem">
+    <addColumn tableName="Entry">
+      <column name="deleted" type="BOOLEAN" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 
 </databaseChangeLog>

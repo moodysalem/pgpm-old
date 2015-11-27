@@ -1,8 +1,8 @@
 import com.moodysalem.jaxrs.lib.test.BaseTest;
-import com.moodysalem.pgpmessager.Application;
+import io.pgpm.Application;
 import org.glassfish.jersey.server.ResourceConfig;
 
-public class PGPMessagerTest extends BaseTest {
+public class PGPMTest extends BaseTest {
     @Override
     public ResourceConfig getResourceConfig() {
         System.setProperty("JDBC_CONNECTION_STRING", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");

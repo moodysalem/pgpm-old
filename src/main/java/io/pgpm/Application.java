@@ -1,4 +1,4 @@
-package com.moodysalem.pgpmessager;
+package io.pgpm;
 
 import com.moodysalem.jaxrs.lib.BaseApplication;
 import com.moodysalem.jaxrs.lib.factories.JAXRSEntityManagerFactory;
@@ -17,7 +17,7 @@ public class Application extends BaseApplication {
     public Application() {
         super();
 
-        packages("com.moodysalem.pgpmessager.resources");
+        packages("io.pgpm.resources");
 
         register(new AbstractBinder() {
             @Override
@@ -28,7 +28,7 @@ public class Application extends BaseApplication {
                     System.getProperty("JDBC_CONNECTION_STRING"),
                     System.getProperty("JDBC_CONNECTION_USERNAME"),
                     System.getProperty("JDBC_CONNECTION_PASSWORD"),
-                    "pgpmessager",
+                    "pgpm",
                     "db/master-changelog.xml",
                     System.getProperty("DEBUG") != null,
                     context
