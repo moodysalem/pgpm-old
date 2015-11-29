@@ -135,6 +135,7 @@
 </#if>
 
 <#include "./Footer.ftl">
+<#include "./GoogleAnalytics.ftl">
 </div>
 </body>
 </html>

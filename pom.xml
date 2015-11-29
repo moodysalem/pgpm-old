@@ -17,7 +17,7 @@
 
   <packaging>war</packaging>
 
-  <name>PGPMessage</name>
+  <name>PGPM.io</name>
 
   <dependencies>
     <!--jaxrs lib-->
