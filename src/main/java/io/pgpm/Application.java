@@ -14,6 +14,9 @@ import javax.ws.rs.ApplicationPath;
 
 @ApplicationPath("")
 public class Application extends BaseApplication {
+
+    public static final String ALLOW_HTTP = "ALLOW_HTTP";
+
     public Application() {
         super();
 
@@ -61,7 +64,7 @@ public class Application extends BaseApplication {
 
     @Override
     public boolean forceHttps() {
-        return true;
+        return !"true".equalsIgnoreCase(ALLOW_HTTP);
     }
 
     @Override
