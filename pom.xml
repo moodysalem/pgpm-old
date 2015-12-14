@@ -96,8 +96,8 @@
             </goals>
             <configuration>
               <silentUpload>true</silentUpload>
-              <applicationName>PGPMessager</applicationName>
-              <environmentRef>pgpmessager-prd.elasticbeanstalk.com</environmentRef>
+              <applicationName>PGPM.io</applicationName>
+              <environmentRef>pgpmio-prd.elasticbeanstalk.com</environmentRef>
               <s3Bucket>eb-project-versions</s3Bucket>
               <s3Key>${project.groupId}/${project.artifactId}/${project.build.finalName}</s3Key>
               <versionLabel>${project.build.finalName}-${maven.build.timestamp}</versionLabel>
