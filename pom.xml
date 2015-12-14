@@ -13,6 +13,8 @@
     <jaxrs.lib.version>1.0.1</jaxrs.lib.version>
     <!--skip deploying to the repositories -->
     <maven.deploy.skip>true</maven.deploy.skip>
+    <server.privateKey></server.privateKey>
+    <server.certificate></server.certificate>
   </properties>
 
   <packaging>war</packaging>
@@ -54,6 +56,20 @@
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <configuration>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+            <webResources>
+              <resource>
+                <directory>src/main/ebextensions</directory>
+                <targetPath>.ebextensions</targetPath>
+                <filtering>true</filtering>
+              </resource>
+            </webResources>
           </configuration>
         </plugin>
       </plugins>
