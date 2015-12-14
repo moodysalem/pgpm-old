@@ -152,10 +152,6 @@
               <value>test</value>
             </systemProperty>
 
-            <systemProperty>
-              <name>ALLOW_HTTP</name>
-              <value>TRUE</value>
-            </systemProperty>
           </systemProperties>
         </configuration>
         <dependencies>

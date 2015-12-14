@@ -64,7 +64,7 @@ public class Application extends BaseApplication {
 
     @Override
     public boolean forceHttps() {
-        return !"true".equalsIgnoreCase(ALLOW_HTTP);
+        return true;
     }
 
     @Override
