@@ -1,5 +1,6 @@
 package io.pgpm.resources;
 
+import com.moodysalem.jaxrs.lib.filters.HTTPSFilter;
 import com.moodysalem.util.RandomStringUtil;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -94,7 +95,7 @@ public class HomeResource {
             SendMessageModel sm = new SendMessageModel();
             sm.setEntry(e);
             sm.setMessage(message);
-            sm.setRequestUrl(req.getUriInfo().getBaseUri().toString());
+            sm.setRequestUrl(req.getUriInfo().getBaseUriBuilder().scheme(HTTPSFilter.HTTPS).build().toString());
             sendEmail(e.getEmail(), "You received a message from a friend", "Message.ftl", sm);
             sendModel.setSuccessMessage("Message sent.");
         }
@@ -204,7 +205,7 @@ public class HomeResource {
     protected void sendEmail(Entry entry) {
         LinkEmailModel lem = new LinkEmailModel();
         lem.setEntry(entry);
-        lem.setRequestUrl(req.getUriInfo().getBaseUri().toString());
+        lem.setRequestUrl(req.getUriInfo().getBaseUriBuilder().scheme(HTTPSFilter.HTTPS).build().toString());
         sendEmail(entry.getEmail(), "Your PGPM.io link has been created", "Link.ftl", lem);
     }
 
