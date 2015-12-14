@@ -13,8 +13,6 @@
     <jaxrs.lib.version>1.0.1</jaxrs.lib.version>
     <!--skip deploying to the repositories -->
     <maven.deploy.skip>true</maven.deploy.skip>
-    <server.privateKey></server.privateKey>
-    <server.certificate></server.certificate>
   </properties>
 
   <packaging>war</packaging>
